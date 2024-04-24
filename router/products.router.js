@@ -8,19 +8,7 @@ const router = Router();
 
 const service = new ProductsService();
 
-/**
- * @swagger
- * /api/v1/products/:
- *  get:
- *    summary: Return the list all the products
- *    responses:
- *      200:
- *        description: The las list of the books
- *        content:
- *          application/json:
- *            schema:
- *              type: array
- */
+
 
 router.get('/', async (req, res,next) => {
   try {
