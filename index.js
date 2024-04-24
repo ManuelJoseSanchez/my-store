@@ -9,7 +9,18 @@ const app = express();
 
 const port = 3000;
 
-app.use(cors());
+const whiteList = ["http://localhost:3000","http://my-app"];
+const options = {
+  origin: (origin, callback) => {
+    if (whiteList.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('no permitido'));
+    }
+  }
+};
+
+app.use(cors(options));
 
 app.use(express.json());
 
