@@ -1,17 +1,15 @@
 const { Router } = require('express');
 
+const UserService =require('../services/user.service');
+
 const router = Router();
 
-router.get("/user", (req, res) => {
+const services = new UserService();
+
+router.get("/", async (req, res,next) => {
   const { limit, offset } = req.query;
-  if (limit && offset) {
-      res.json({
-          limit,
-          offset
-      });
-  } else {
-      res.send("no hay parametros");
-  }
+  const user = await services.find();
+  res.status(200).json(user);
 });
 
 module.exports = router;
