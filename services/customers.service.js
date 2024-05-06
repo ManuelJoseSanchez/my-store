@@ -14,8 +14,10 @@ class CustomerService {
   }
 
   async findOne(id) {
-    const customer = await models.Customer.findByPk(id);
-    if (customer) {
+    const customer = await models.Customer.findByPk(id,{
+      include: ['user']
+    });
+    if (!customer) {
       throw boom.notFound("Customer not found");
     }
     return customer;
@@ -29,8 +31,9 @@ class CustomerService {
   }
 
   async update(customerId, customer) {
+    console.log(customerId);
     const customers= await this.findOne(customerId);
-    const costumerUp = await models.Customers.update(customer);
+    const costumerUp = await customers.update(customer);
     return costumerUp;
   }
 

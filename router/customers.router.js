@@ -42,9 +42,9 @@ router.post("/", validatorHander(createCustomerSchema,'body'), async (req, res, 
 router.patch("/:customerid", validatorHander(getCustomerSchema, 'params'),
 validatorHander(updateCustomerSchema,'body'),async (req, res, next) => {
   try {
-    const { customerId } = req.params;
+    const { customerid } = req.params;
     const { body } = req;
-    const customer = await service.update(customerId, body);
+    const customer = await service.update(customerid, body);
     res.status(200).json(customer);
   } catch (error) {
     next(error);
@@ -54,8 +54,8 @@ validatorHander(updateCustomerSchema,'body'),async (req, res, next) => {
 
 router.delete("/:customerid", validatorHander(getCustomerSchema, 'params'),async (req, res, next) => {
   try {
-    const { customerId } = req.params;
-    const customer = await service.delete(customerId);
+    const { customerid } = req.params;
+    const customer = await service.delete(customerid);
     res.status(201).json(customer);
   } catch (error) {
     next(error);

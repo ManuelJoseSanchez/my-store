@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const id = Joi.number().integer();
+const customerid = Joi.number().integer();
 const name = Joi.string().min(6).max(30);
 const lastName = Joi.string();
 const phone = Joi.string();
@@ -10,7 +10,7 @@ const email = Joi.string().email();
 const password = Joi.string();
 
 const getCustomerSchema = Joi.object({
-  id:id.required(),
+  customerid:customerid.required(),
 });
 
 const createCustomerSchema = Joi.object({
