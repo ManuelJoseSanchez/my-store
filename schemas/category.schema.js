@@ -11,7 +11,7 @@ const createCategorySchema = Joi.object({
 
 const updateCategorySchema = Joi.object({
   name: name,//🧛‍♀️
-  imagen: image//🦹
+  image: image//🦹
 });
 
 const getCategorySchema = Joi.object({

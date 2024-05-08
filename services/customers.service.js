@@ -31,7 +31,6 @@ class CustomerService {
   }
 
   async update(customerId, customer) {
-    console.log(customerId);
     const customers= await this.findOne(customerId);
     const costumerUp = await customers.update(customer);
     return costumerUp;
