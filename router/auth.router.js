@@ -11,7 +11,7 @@ router.post("/login", passport.authenticate('local', {session:false}),
     try {
       const { user } = req;
       const { id, role } = user;
-      const payload = { id, role };
+      const payload = { sub:id, role };
       const jwt = singToken(payload);
       res.status(200).json({
         user,
