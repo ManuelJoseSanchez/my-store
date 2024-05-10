@@ -1,7 +1,10 @@
 const boom = require('@hapi/boom');
 
 const { models } = require('./../libs/sequelize');
+
+const { hasPassword }=require('./../helper/passwordHas.helper');
 class UserService {
+
   constructor() { }
 
   async find() {
@@ -19,10 +22,19 @@ class UserService {
       throw boom.notFound("No se encontro el usuario");
     }
     return user;
+    }
+
+  async findByEmail(email) {
+    const user = await models.User.findOne({
+      where: { email }
+    });
+    return user;
   }
 
-  async created (data) {
+  async created(data) {
+    data.password = await hasPassword(data.password);
     const newUseer = await models.User.create(data);
+    delete newUseer.dataValues.password;
     return newUseer;
   }
 

@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const passport=require('passport');
 
 const validatorHander =require('./../middlewares/validator.handler');
 
@@ -29,7 +30,7 @@ router.get("/:orderId", validatorHander(getOrderSchema, 'params'), async (req, r
   }
 });
 
-router.post("/", validatorHander(createOrderSchema, 'body'), async (req, res, next) => {
+router.post("/", passport.authenticate('jwt', {session:false}),validatorHander(createOrderSchema, 'body'), async (req, res, next) => {
   try {
     const { body } = req;
     const newOrder = await service.create(body);
@@ -39,7 +40,7 @@ router.post("/", validatorHander(createOrderSchema, 'body'), async (req, res, ne
   }
 });
 
-router.patch("/:orderId", validatorHander(getOrderSchema, 'params'), validatorHander(createOrderSchema, 'body'), async (req, res, next) => {
+router.patch("/:orderId", passport.authenticate('jwt', {session:false}),validatorHander(getOrderSchema, 'params'), validatorHander(createOrderSchema, 'body'), async (req, res, next) => {
   try {
     const { orderId } = req.params;
     const { body } = req;
@@ -50,7 +51,7 @@ router.patch("/:orderId", validatorHander(getOrderSchema, 'params'), validatorHa
   }
 });
 
-router.delete("/:orderId", validatorHander(getOrderSchema, 'params'), async (req, res, next) => {
+router.delete("/:orderId",passport.authenticate('jwt', {session:false}), validatorHander(getOrderSchema, 'params'), async (req, res, next) => {
   try {
     const { orderId } = req.params;
     const order = await service.delete(orderId);

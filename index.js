@@ -1,5 +1,6 @@
 const express = require('express');
-const cors =require('cors');
+const cors = require('cors');
+const passport=require('passport');
 
 const { logErros, errorHandler, boomErrorHander,ormErrorHandler } = require('./middlewares/error.handler');
 
@@ -22,6 +23,8 @@ const options = {
 
 app.use(cors(options));
 
+require("./utils/auth");
+app.use(passport.initialize({ session: false }));
 app.use(express.json());
 
 routerApi(app);

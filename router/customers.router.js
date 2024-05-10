@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const passport=require('passport');
 
 const CustomerService = require('./../services/customers.service');
 
@@ -39,7 +40,7 @@ router.post("/", validatorHander(createCustomerSchema,'body'), async (req, res, 
   }
 });
 
-router.patch("/:customerid", validatorHander(getCustomerSchema, 'params'),
+router.patch("/:customerid", passport.authenticate('jwt', {session:false}),validatorHander(getCustomerSchema, 'params'),
 validatorHander(updateCustomerSchema,'body'),async (req, res, next) => {
   try {
     const { customerid } = req.params;
@@ -52,7 +53,7 @@ validatorHander(updateCustomerSchema,'body'),async (req, res, next) => {
 });
 
 
-router.delete("/:customerid", validatorHander(getCustomerSchema, 'params'),async (req, res, next) => {
+router.delete("/:customerid", passport.authenticate('jwt', {session:false}),validatorHander(getCustomerSchema, 'params'),async (req, res, next) => {
   try {
     const { customerid } = req.params;
     const customer = await service.delete(customerid);
