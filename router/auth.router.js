@@ -2,24 +2,30 @@ const { Router } = require('express');
 
 const passport = require('passport');
 
-const { singToken }=require('./../helper/jwt.helper');
+const AuthService =require('./../services/auth.service');
 
 const router = Router();
+
+const service = new AuthService();
 
 router.post("/login", passport.authenticate('local', {session:false}),
   async (req, res, next) => {
     try {
       const { user } = req;
-      const { id, role } = user;
-      const payload = { sub:id, role };
-      const jwt = singToken(payload);
-      res.status(200).json({
-        user,
-        token:jwt
-      });
+      res.status(200).json(service.signToken(user));
     } catch (error) {
       next(error)
     }
 });
 
+
+router.post("/recovery", async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const rest = await service.sendMail(email);
+    res.status(201).json(rest);
+  } catch (error) {
+    next(error)
+  }
+});
 module.exports = router;

@@ -1,7 +1,5 @@
 const boom = require('@hapi/boom');
 
-const { makePaginate }=require('sequelize-cursor-pagination');
-
 const { models } = require('./../libs/sequelize');
 
 class OrderService {
@@ -12,14 +10,22 @@ class OrderService {
     const newOrder = await models.Order.create(data);
     return newOrder;
   }
-
   async addItem(data) {
     const newItem = await models.OrderProduct.create(data);
     return newItem;
   }
 
-  async findAll() {
-    const orders = await models.Order.findAll();
+  async find(userId) {
+    const option = {
+      include: [
+        {
+          association: 'customer',
+          include: ['user']
+        },
+        "items"
+      ]
+    };
+    const orders = await models.Order.findAll(option);
     return orders;
   }
 
@@ -59,7 +65,8 @@ class OrderService {
         {
           association: 'customer',
           include: ['user']
-        }
+        },
+        "items"
       ]
     });
     return orders;

@@ -11,10 +11,11 @@ const service = new OrderService();
 
 const router = Router();
 
-router.get("/", async (req, res, next) => {
+router.get("/", passport.authenticate('jwt', {session:false}),async (req, res, next) => {
   try {
-    const orders = await service.findAll();
-    res.status(200).json(orders);
+    const user = req.user;
+    const orderlist = await service.find(user.sub);
+    res.status(200).json(orderlist);
   } catch (error) {
     next(error)
   }
