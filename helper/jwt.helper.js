@@ -4,9 +4,13 @@ const  { config }= require('./../config/config');
 
 const scret = config.keySecret;
 
-function singToken(playload) {
-  return jwt.sign(playload, scret);
+function singToken(playload,options={}) {
+  return jwt.sign(playload, scret,options);
 }
 
-module.exports={ singToken }
+function verifyTokent(token) {
+  return jwt.verify(token,scret);
+}
+
+module.exports={ singToken, verifyTokent }
 

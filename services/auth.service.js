@@ -5,8 +5,8 @@ const { configEmail } = require('./../config/configEmail');
 
 const userService = require('./user.service');
 
-const { comparePassword } = require('./../helper/passwordHas.helper');
-const { singToken }=require('./../helper/jwt.helper');
+const { comparePassword, hasPassword } = require('./../helper/passwordHas.helper');
+const { singToken, verifyTokent }=require('./../helper/jwt.helper');
 
 
 const service = new userService();
@@ -38,21 +38,44 @@ class AuthService {
     };
   }
 
-  async sendMail(email) {
+  async sendRecovery(email){
     const user = await service.findByEmail(email);
     if (!user) {
       throw boom.unauthorized("It's not found user");
     }
-    console.log(configEmail);
+    const payload ={ sub:user.id }
+    const token =singToken(payload,{expiresIn:'15min'});
+    const link=`http://myfrontend.com/recovery?token=${token}`;
+    await service.update(user.id,{recoveryToken:token});
+    const mail={
+      from: "arjun.hagenes@ethereal.email",
+      to: `arjun.hagenes@ethereal.email`,
+      subject: "Email para recuperar contraseña",
+      html:`<b>Ingresa a este link => ${link} </b>`
+    };
+    const rta=await this.sendMail(mail);
+    return rta;
+  }
+
+  async sendMail(infoMail) {
     const transporter = nodemailer.createTransport(configEmail);
-    await transporter.sendMail({
-      from: "willis.schulist@ethereal.email",
-      to: `willis.schulist@ethereal.email`,
-      subject: "It's sent a new email",
-      text: "Hello manuel",
-      html:"<b>Hello manuel</b>"
-    });
+    await transporter.sendMail(infoMail);
     return {massage:'mail sent'}
+  }
+
+  async changePassword(token,newPassword){
+    try {
+      const payload=verifyTokent(token);
+      const user = await service.findOne(payload.sub);
+      if(token !== user.recoveryToken){
+        throw  boom.unauthorized();
+      }
+      const hash = await hasPassword(newPassword);
+      await service.update(user.id,{ recoveryToken:"",password:hash });
+      return {message:'password changed'};
+    } catch(e) {
+      throw  boom.unauthorized();
+    }
   }
 }
 

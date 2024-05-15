@@ -4,6 +4,7 @@ const saltRounds = 10;
 
 async function hasPassword(password) {
   const passwordhas = await bcrypt.hash(password, saltRounds);
+  console.log(passwordhas);
   return passwordhas;
 }
 
